@@ -5,8 +5,8 @@ session_start();
 include('config.php');
 require_once 'library/HTMLPurifier.auto.php';
 $config = HTMLPurifier_Config::createDefault();
-$config->set('Core.Encoding', 'UTF-8'); // replace with your encoding
-$config->set('HTML.Doctype', 'XHTML 1.0 Transitional'); // replace with your doctype
+$config->set('Core.Encoding', 'UTF-8'); 
+$config->set('HTML.Doctype', 'XHTML 1.0 Transitional'); 
 $purifier = new HTMLPurifier($config);
 ?> 
  <!DOCTYPE html> 
@@ -145,24 +145,23 @@ if (!$_GET['id']) {
             $num_res           = $db->query("SELECT COUNT(post_id) from forum_posts where topic_id = $topic_id");
             $num_posts         = $num_res->fetchColumn();
             $display .= "<tr><td><a href=\"topics.php?id=$topic_id\">
-												<strong>$topic_title</strong></a><br/>
-												Created on $topic_create_time by $topic_owner</td>
-												<td align=center>$num_posts</td>
-												</tr>";
-        							}
-   						 }
+	<strong>$topic_title</strong></a><br/>
+	Created on $topic_create_time by $topic_owner</td>
+	<td align=center>$num_posts</td>
+	</tr>";
+        		}
+   			 }
   	  $display .= "</table>
-									<p><div  id=\"flip\"><button class=\"btn btn-primary\">New Thread</button></div>
-    							<div id=\"panel\">
-									<form method=\"post\" action=\"$current\">
-									<p><strong>Thread Subject:</strong></p>
-									<input type=\"text\" name=\"topic_title\" class=\"input-xxlarge\" size=200 maxlength=150>
-									<p><strong>Your Message:</strong><br />
-									<textarea name=\"post_txt\" rows=8 cols=80 id=\"sty\" wrap=virtual></textarea>
-									<br /><button class=\"btn btn-primary\" type=\"submit\">Post Thread</button>
-									</form>
-									</div>
-    							";
+     	 	       <p><div  id=\"flip\"><button class=\"btn btn-primary\">New Thread</button></div>
+    		       <div id=\"panel\">
+		       <form method=\"post\" action=\"$current\">
+	    	       <p><strong>Thread Subject:</strong></p>
+			<input type=\"text\" name=\"topic_title\" class=\"input-xxlarge\" size=200 maxlength=150>
+			<p><strong>Your Message:</strong><br />
+	  	        <textarea name=\"post_txt\" rows=8 cols=80 id=\"sty\" wrap=virtual></textarea>
+			<br /><button class=\"btn btn-primary\" type=\"submit\">Post Thread</button>
+			</form>
+			</div>";
     
     if (isset($_SESSION['username'])) {
         $owner = $_SESSION['username'];
@@ -245,80 +244,79 @@ $rul = htmlspecialchars($_SERVER['PHP_SELF']);
 
         while ($rowz = $querz->fetch(PDO::FETCH_ASSOC)) {
             if($rowz['verify']=='0'){ 
-               								 $post_id = $rowz ['post_id'];
-               								 $post_text = $purifier->purify('<em>Reply is currently Awaiting for moderation.</em>');
-           										 $post_create_time = $rowz['fmt_post_create_time'];
-            									$post_owner  = htmlspecialchars($purifier->purify($rowz['post_owner']));
-               				 $display .= "
-																<tr>
-																<td width=15% valign=top>$post_owner<br>[$post_create_time]</td>
-																<td width=85% valign=top>$post_text<br><br>
-																</tr><tr class=\"separator\" />";
-          							  }else{
-          										  $post_id          = $rowz['post_id'];
-           									 	 $post_text        = nl2br($purifier->purify($rowz['post_text']));
-      										      $post_create_time = $rowz['fmt_post_create_time'];
-          										  $post_owner       = $purifier->purify($rowz['post_owner']);
-         										   $display .= "
-																						<tr>
-																						<td width=15% valign=top>$post_owner<br>[$post_create_time]</td>
-																						<td width=85% valign=top>$post_text<br><br>
-																						</tr><tr class=\"separator\"></tr>"; 
-															}
-      																	  }
+                $post_id = $rowz ['post_id'];
+               	$post_text = $purifier->purify('<em>Reply is currently Awaiting for moderation.</em>');
+           	$post_create_time = $rowz['fmt_post_create_time'];
+            	$post_owner  = htmlspecialchars($purifier->purify($rowz['post_owner']));
+                $display .= "
+			<tr>
+			<td width=15% valign=top>$post_owner<br>[$post_create_time]</td>
+			<td width=85% valign=top>$post_text<br><br>
+			</tr><tr class=\"separator\" />";
+          	  }else{
+          	 $post_id          = $rowz['post_id'];
+          	 $post_text        = nl2br($purifier->purify($rowz['post_text']));
+      		 $post_create_time = $rowz['fmt_post_create_time'];
+          	 $post_owner       = $purifier->purify($rowz['post_owner']);
+         	 $display .= "
+			<tr>
+			<td width=15% valign=top>$post_owner<br>[$post_create_time]</td>
+		        <td width=85% valign=top>$post_text<br><br>
+		        </tr><tr class=\"separator\"></tr>"; 
+				}
+      					  }
         $in = htmlspecialchars($_GET['id']);
         $poos = htmlspecialchars($_SERVER['PHP_SELF']."?id=".$in);
 				$next = $pagenum+1;
 				$prev = $pagenum-1;
         $display .= "</table>
-										<div class=\"pagination pagination-small pagination-centered\">
-  									<ul>
-   								 <li><a href=\"$poos&page=$pagenum\">Page $pagenum of $last</a></li>
-    								<li><a href=\"$poos&page=$prev\">Prev</a></li>";
-
-				for ($i=1;$i <= $last;$i++){
- 																		 $display .= "<li><a href=\"$poos&page=$i\">$i</a></li>";
-																		}
-								$display .="
- 												   <li><a href=\"$poos&page=$next\">Next</a></li>
-  												</ul>
-													</div>
-      									  <form method=\"post\" action=\"$poos\">
-    									    <textarea name=\"post_text\" id=\"sty\" rows=10 cols=30 ></textarea>
-													<br/>
-													<button class=\"btn btn-primary\" type=\"submit\">New Reply</button>
-													<br/>
-													</form>";
+		     <div class=\"pagination pagination-small pagination-centered\">
+  		     <ul>
+   		     <li><a href=\"$poos&page=$pagenum\">Page $pagenum of $last</a></li>
+    	   	     <li><a href=\"$poos&page=$prev\">Prev</a></li>";
+    	   	     
+ for ($i=1;$i <= $last;$i++){
+ 	 $display .= "<li><a href=\"$poos&page=$i\">$i</a></li>";
+	}
+		$display .="
+ 	 <li><a href=\"$poos&page=$next\">Next</a></li>
+	 </ul>
+	 </div>
+      	 <form method=\"post\" action=\"$poos\">
+    	<textarea name=\"post_text\" id=\"sty\" rows=10 cols=30 ></textarea>
+	<br/>
+	<button class=\"btn btn-primary\" type=\"submit\">New Reply</button>
+	<br/>
+	</form>";
     	    if(isset($_SESSION['username']))
      		   {
            		 if(isset($_POST['post_text']))
            		 {
-								$db   = new PDO("mysql:host=127.0.0.1;dbname=$db_database", $db_username, $db_password);
-								$tox  = "INSERT INTO forum_posts values('',?,?,now(),?,'1')";
-								$ro   = array($_GET['id'],$_POST['post_text'],$_SESSION['username']);
-								$query = $db->prepare($tox);
-								$query->execute($ro);
-								echo "<div class=\"alert alert-info\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Your Reply is posted.</div>";
+$db   = new PDO("mysql:host=127.0.0.1;dbname=$db_database", $db_username, $db_password);
+$tox  = "INSERT INTO forum_posts values('',?,?,now(),?,'1')";
+$ro   = array($_GET['id'],$_POST['post_text'],$_SESSION['username']);
+$query = $db->prepare($tox);
+$query->execute($ro);
+echo "<div class=\"alert alert-info\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Your Reply is posted.</div>";
       	      }
        	 }else
      	       {
-							 if(isset($_POST['post_text'])){
-											$db   = new PDO('mysql:host=127.0.0.1;dbname=$db_database', $db_username, $db_password);
-								if(isset($_SESSION['username'])){
-									$tox  = "INSERT INTO forum_posts values('',?,?,now(),?,'1')";
-																								} else {
-									$tox = "INSERT INTO forum_posts values('',?,?,now(),?,'0')";
-																												}
-																$ro   = array($_GET['id'],$_POST['post_text'],'[GUEST]');
-																$query = $db->prepare($tox);
-																$query->execute($ro);
-								echo "<div class=\"alert alert-info\"> <button type=\"button\" class=\"close\" 
-											data-dismiss=\"alert\">&times;</button>Your Reply is posted.</div>";
-  				 }
+	 if(isset($_POST['post_text'])){
+		$db   = new PDO('mysql:host=127.0.0.1;dbname=$db_database', $db_username, $db_password);
+	if(isset($_SESSION['username'])){
+$tox  = "INSERT INTO forum_posts values('',?,?,now(),?,'1')";
+	} else {
+$tox = "INSERT INTO forum_posts values('',?,?,now(),?,'0')";
+}
+$ro   = array($_GET['id'],$_POST['post_text'],'[GUEST]');
+$query = $db->prepare($tox);
+$query->execute($ro);
+echo "<div class=\"alert alert-info\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Your Reply is posted.</div>";
+  			 }
             			}
-  										  }
-   						 echo "<html><head><title>$topic_title</title></head><body>";
-    print $display;
+  			}
+echo "<html><head><title>$topic_title</title></head><body>";
+print $display;
     
 }
 ?>
